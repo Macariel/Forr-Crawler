@@ -7,18 +7,19 @@ fi
 FILE_WITH_LINKS="$(realpath $1)"
 
 # Go to directory of script
-DIR="${0%/*}"
-cd $DIR
+SCRIPT_DIR="${0%/*}"
+cd $SCRIPT_DIR
 
 # Progress data files
-PROGRESS_DATA="$DIR/progress-data"
+ROOT=$(realpath "$SCRIPT_DIR/..")
+PROGRESS_DATA="$ROOT/progress-data"
 FAILED="$PROGRESS_DATA/failed_links"
 DEAD_LINKS="$PROGRESS_DATA/dead_links"
 ALBUMS="$PROGRESS_DATA/downloaded_albums"
 PROCESSED_LINKS="$PROGRESS_DATA/processed_links"
 
-ARCHIVES="$DIR/archives/"
-MEGADOWN="$DIR/bin/megadown"
+ARCHIVES=$(realpath "$ROOT/archives/")
+MEGADOWN=$(realpath "$ROOT/bin/megadown")
 
 > $FAILED 
 find music/* -maxdepth 1 -type d -exec sh -c 'basename "$1" | iconv -f utf-8 -t ascii//TRANSLIT' _ {} \; > $ALBUMS

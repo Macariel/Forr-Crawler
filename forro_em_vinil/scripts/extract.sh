@@ -3,8 +3,9 @@
 DIR="${0%/*}"
 cd $DIR
 
-ARCHIVES="$DIR/archives"
-MUSIC_DIR=$(realpath "$DIR/../music/forro_em_vinil")
+ROOT=$(realpath "$DIR/..")
+ARCHIVES="$ROOT/archives"
+MUSIC_DIR="$ROOT/music/forro_em_vinil"
 
 cd $MUSIC_DIR
 
