@@ -1,26 +1,24 @@
 #!/usr/bin/env python3
 import argparse
 import os
+import subprocess
 import sys
-
-import youtube_dl
-from scdl import scdl
 
 from forro_em_vinil import forro_em_vinil
 
 DIR = os.path.dirname(__file__)
 MUSIC_DIR = os.path.join(DIR, "music")
+SCRIPT_DIR = os.path.join(DIR, "scripts")
 
 
 def main():
     args = parse_arguments()
-    print(args)
 
     if args.crawler == "vinil":
         downoad_from_forro_em_vinil(args)
 
     if args.crawler == "soundcloud":
-        download_from_soundcloud(args.link.args.dest)
+        download_from_soundcloud(args.link)
 
     if args.crawler == "youtube":
         download_from_youtube(args.link, args.dest)
@@ -37,21 +35,12 @@ def downoad_from_forro_em_vinil(args):
         forro_em_vinil.extract()
 
 
-def download_from_soundcloud(link, dest):
-    # TODO: save link to playlist
-    dest = os.path.join(MUSIC_DIR, "soundcloud", dest)
-    sys.argv = ["scdl", "--extract-artist", "--addtofile", "--path", dest, "-l", link]
-    scdl.main()
+def download_from_soundcloud(link):
+    return subprocess.run([os.path.join(SCRIPT_DIR, "download_from_soundcloud.sh"), link]).returncode
 
 
 def download_from_youtube(link, dest):
-    # TODO: save link to playlist
-    ydl_opts = {
-        "format": "bestaudio",
-        "output": os.path.join(MUSIC_DIR, "youtube", dest, "%(title)s.%(ext)s")
-    }
-    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-        ydl.download([link])
+    return subprocess.run([os.path.join(SCRIPT_DIR, "download_from_youtube.sh"), link, dest]).returncode
 
 
 def parse_arguments():
@@ -63,7 +52,6 @@ def parse_arguments():
 
     soundcloud = subparsers.add_parser("soundcloud", help="Soundcloud music downloader")
     soundcloud.add_argument("link", help="Link to a soundcloud playlist")
-    soundcloud.add_argument("dest", help="Name of the folder which will contain the music")
 
     youtube = subparsers.add_parser("youtube", help="YouTube music downloader")
     youtube.add_argument("link", help="Link to a video or a playlist")
