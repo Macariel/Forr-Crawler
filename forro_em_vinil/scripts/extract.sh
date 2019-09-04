@@ -1,7 +1,6 @@
 #!/bin/bash -
 # Go to directory of script
 DIR="${0%/*}"
-cd $DIR
 
 VINIL_ROOT=$(realpath "$DIR/..")
 ARCHIVES="$VINIL_ROOT/archives"

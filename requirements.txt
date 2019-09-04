@@ -1,3 +1,4 @@
+python-slugify
 bs4
 urllib3
 youtube-dl

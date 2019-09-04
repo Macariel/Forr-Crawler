@@ -9,7 +9,6 @@ FILE_WITH_LINKS="$(realpath $1)"
 
 # Go to directory of script
 SCRIPT_DIR="${0%/*}"
-cd $SCRIPT_DIR
 
 # Progress data files
 ROOT=$(realpath "$SCRIPT_DIR/..")
