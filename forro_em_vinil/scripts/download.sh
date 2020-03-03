@@ -21,9 +21,12 @@ PROCESSED_LINKS="$PROGRESS_DATA/processed_links"
 ARCHIVES=$(realpath "$ROOT/archives/")
 MEGADOWN=$(realpath "$ROOT/bin/megadown")
 
+# include formatting functions
+source $(realpath $ROOT/../scripts)/formatting.sh
+
 > $FAILED
-echo "# Fetching already downloaded album names"
-find $(realpath "$ROOT/../music/forro_em_vinil/*") -maxdepth 1 -type d -exec sh -c 'basename "$1" | iconv -f utf-8 -t ascii//TRANSLIT' _ {} \; > $ALBUMS
+underlined "# Fetching already downloaded album names\n"
+find $(realpath "$ROOT/../music/forro_em_vinil/") -maxdepth 1 -type d -exec sh -c 'basename "$1" | iconv -f utf-8 -t ascii//TRANSLIT' _ {} \; > $ALBUMS
 
 if [[ ! -f $PROCESSED_LINKS ]]; then
     touch $PROCESSED_LINKS
@@ -40,7 +43,7 @@ while read link; do
   # Check if the link is still up
   metadata="$($MEGADOWN -qm $link 2>&1)"
   if [[ -n $(echo "$metadata" | grep "MEGA ERROR") ]]; then
-    echo "[FAIL] Link dead: $link"
+    red "[FAIL]"; echo " Link dead: $link"
     echo "$link" >> $DEAD_LINKS
     continue
   fi
@@ -49,16 +52,18 @@ while read link; do
   album_name=$($MEGADOWN -qm $link | jq -r ".file_name" | cut -f 1 -d '.' | iconv -f utf-8 -t ascii//TRANSLIT)
 
   if [[ -z $album_name ]]; then
-    echo "[FAIL] No album name found: $link"
+    red "[FAIL]"; echo " No album name found: $link"
     echo $link >> $DEAD_LINKS
   elif [[ -z $(grep -r "$album_name" $ALBUMS) ]]; then
-    output=$($MEGADOWN -q $link 2>&1)
+    blue "[NEW]"; echo " Downloading $album_name"
+    #output=$($MEGADOWN -q $link 2>&1)
+    output=$($MEGADOWN $link)
 
     if [[ $? -eq 0 ]]; then
-      echo "[NEW] $album_name"
+      blue "[NEW]"; echo " $album_name"
       echo $link >> $PROCESSED_LINKS
     else
-      echo "[FAIL] Temporary unavailable ($( echo $output | tr -d '\n')): $link"
+      red "[FAIL]"; echo " Temporary unavailable ($( echo $output | tr -d '\n')): $link"
       echo $link >> $FAILED
     fi
   else
