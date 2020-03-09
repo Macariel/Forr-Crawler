@@ -37,7 +37,7 @@ i=1
 max=$(wc -l < $FILE_WITH_LINKS)
 while read link; do
   # Counter
-  green "($i/$max)" && echo ""
+  green "$i/$max "
   i=$((i+1))
 
   # Check if link was already downloaded
@@ -62,11 +62,10 @@ while read link; do
     echo $link >> $DEAD_LINKS
   elif [[ -z $(grep -r "$album_name" $ALBUMS) ]]; then
     blue "[NEW]"; echo " Downloading $album_name"
-    #output=$($MEGADOWN -q $link 2>&1)
     output=$($MEGADOWN $link)
 
     if [[ $? -eq 0 ]]; then
-      blue "[NEW]"; echo " $album_name"
+      #blue "[NEW]"; echo " $album_name"
       echo $link >> $PROCESSED_LINKS
     else
       red "[FAIL]"; echo " Temporary unavailable ($( echo $output | tr -d '\n')): $link"
