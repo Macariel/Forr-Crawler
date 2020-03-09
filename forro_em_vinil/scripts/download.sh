@@ -33,7 +33,13 @@ if [[ ! -f $PROCESSED_LINKS ]]; then
 fi
 
 cd $ARCHIVES
+i=1
+max=$(wc -l < $FILE_WITH_LINKS)
 while read link; do
+  # Counter
+  green "($i/$max)" && echo ""
+  i=$((i+1))
+
   # Check if link was already downloaded
   if [[ ! -z $(grep "$link" $PROCESSED_LINKS) ]]; then
     echo "[DONE] Already downloaded: $link"
