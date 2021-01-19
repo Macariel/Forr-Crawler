@@ -37,6 +37,11 @@ while read link; do
   green "$i/$max "
   i=$((i+1))
 
+  # Transform new links to old ones as megaupload cannot handle the new ones
+  if [[ $link =~ ^https?\:\/\/[^\/]+\/file\/(.*)#(.*)$ ]]; then
+    link="https://mega.nz/#!${BASH_REMATCH[1]}!${BASH_REMATCH[2]}"
+  fi
+
   # Check if link was already downloaded
   if [[ -n $(grep "$link" $PROCESSED_LINKS) ]]; then
     echo "[DONE] Already downloaded: $link"
@@ -64,6 +69,7 @@ while read link; do
   # Check if file already exists
   if [[ -f "$filename" ]] || [[ -n $(grep "$filename" $PROCESSED_ARCHIVES ) ]]; then
     echo "[DONE] File already exists"
+    echo $link >> $PROCESSED_LINKS
     continue
   fi
 
