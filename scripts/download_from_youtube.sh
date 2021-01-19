@@ -16,4 +16,4 @@ cd $MUSIC_DIR
 [[ ! -d $DEST ]] && mkdir $DEST
 cd $DEST
 
-youtube-dl -o "%(title)s.%(ext)s" --format bestaudio "$URL"
+youtube-dl -i -o "%(title)s.%(ext)s" -x --audio-format mp3 "$URL"
