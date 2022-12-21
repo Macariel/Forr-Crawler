@@ -1,5 +1,6 @@
 python-slugify
-bs4
-urllib3
+bs4~=0.0.1
+urllib3~=1.26.9
 youtube-dl
 scdl
+beautifulsoup4~=4.11.1

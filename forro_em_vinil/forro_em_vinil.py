@@ -9,9 +9,9 @@ import subprocess
 import sys
 from slugify import slugify
 
-BASE_LINK = "http://www.forroemvinil.com"
-TAG_PAGE_LINK = "http://www.forroemvinil.com/tag/%s/page/%s"
-CATEGORY_LINK = "http://www.forroemvinil.com/category/%s/page/%s"
+BASE_LINK = "https://www.forroemvinil.com"
+TAG_PAGE_LINK = "https://www.forroemvinil.com/tag/%s/page/%s"
+CATEGORY_LINK = "https://www.forroemvinil.com/category/%s/page/%s"
 CATEGORIES = ["lps", "78-rpm", "compactos", "8-polegadas", "10polegadas", "cds"]
 
 DIR = os.path.dirname(__file__)
@@ -44,7 +44,7 @@ def _fetch_links(link_template, crawl_values, link_fetcher):
     links = set()
     try:
         for value in crawl_values:
-            print("# Fetching links for '%s'" % value)
+            print(f"# Fetching links for '{value}'")
             page_content = _download_site(link_template % (value, 1))
             if not page_content:
                 continue
@@ -181,7 +181,8 @@ def _download_site(link):
     if CACHING and os.path.isfile(file_name):
         return BeautifulSoup(Path(file_name).read_text(), "html.parser")
 
-    r = HTTP.request("GET", link)
+    r = HTTP.request("GET", url=link,
+                     headers={"User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:101.0) Gecko/20100101 Firefox/101.0"})
     if r.status != 200:
         _warn("Could not be processed (%s): %s" % (r.status, link))
         return None
